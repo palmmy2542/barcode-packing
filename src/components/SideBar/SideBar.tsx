@@ -109,8 +109,8 @@ export default function PersistentDrawerLeft({ main }: { main: JSX.Element }) {
         <List>
           {[
             { text: "สินค้าทั้งหมด", path: "/", icon: <InboxIcon /> },
-            { text: "กล่อง/ลังทั้งหมด", path: "/box", icon: <MailIcon /> },
-            { text: "พาเลสทั้งหมด", path: "/palette", icon: <MailIcon /> },
+            { text: "กล่อง/ลังทั้งหมด", path: "/cases", icon: <MailIcon /> },
+            { text: "พาเลสทั้งหมด", path: "/palettes", icon: <MailIcon /> },
           ].map(({ text, icon, path }, index) => (
             <ListItem key={`${text}-${index}`} onClick={() => navigate(path)}>
               <ListItemButton>
