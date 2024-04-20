@@ -15,7 +15,6 @@ import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import Toolbar from "@mui/material/Toolbar";
-import Typography from "@mui/material/Typography";
 import { styled } from "@mui/material/styles";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -82,7 +81,7 @@ export default function PersistentDrawerLeft({ main }: { main: JSX.Element }) {
   const theme = useTheme();
   const isDownMedium = useMediaQuery(theme.breakpoints.down("md"));
 
-  const toggleDrawer = (open: boolean) => (event) => {
+  const toggleDrawer = (open: boolean) => (event: any) => {
     if (
       event.type === "keydown" &&
       (event.key === "Tab" || event.key === "Shift")

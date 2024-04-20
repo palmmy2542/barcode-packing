@@ -40,7 +40,7 @@ const Products = () => {
           label="ราคาสินค้า"
           type="number"
           onChange={(event) =>
-            setNewProduct({ ...newProduct, price: event.target.value })
+            setNewProduct({ ...newProduct, price: Number(event.target.value) })
           }
           required
         />
