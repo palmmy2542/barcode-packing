@@ -19,7 +19,7 @@ export const columns: GridColDef[] = [
   {
     field: "status",
     headerName: "สถานะ",
-    width: 150,
+    width: 200,
     align: "center",
     headerAlign: "center",
     hideable: true,
@@ -27,8 +27,8 @@ export const columns: GridColDef[] = [
       if (params.value === PACKED_STATUS.READY) {
         return (
           <Chip
-            label="ยังไม่จัดสินค้า"
-            color="warning"
+            label="ยังไม่จัดสินค้าลงกล่อง"
+            color="default"
             sx={{ width: "100%" }}
           />
         );
