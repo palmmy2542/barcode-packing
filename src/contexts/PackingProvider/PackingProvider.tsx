@@ -32,7 +32,7 @@ const PackingContext = createContext<IPackingContext>({
 const mockProducts: Product[] = [
   {
     id: "P001",
-    name: "Product 1",
+    name: "13124133",
     amount: 100,
     status: PACKED_STATUS.READY,
     createdAt: new Date("2024-01-01"),
@@ -40,7 +40,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "P002",
-    name: "Product 2",
+    name: "13124134",
     amount: 100,
     status: PACKED_STATUS.READY,
     createdAt: new Date("2024-01-01"),
@@ -48,7 +48,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "P003",
-    name: "Product 3",
+    name: "13124135",
     amount: 100,
     status: PACKED_STATUS.READY,
     createdAt: new Date("2024-01-01"),
@@ -56,7 +56,7 @@ const mockProducts: Product[] = [
   },
   {
     id: "P004",
-    name: "Product 4",
+    name: "13124136",
     amount: 100,
     status: PACKED_STATUS.READY,
     createdAt: new Date("2024-01-01"),

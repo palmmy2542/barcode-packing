@@ -64,7 +64,7 @@ const ProductScanning = () => {
       { field: "id", headerName: "ID", width: 90 },
       {
         field: "name",
-        headerName: "ชื่อสินค้า",
+        headerName: "บาร์โค๊ด",
         width: 150,
         editable: true,
       },
