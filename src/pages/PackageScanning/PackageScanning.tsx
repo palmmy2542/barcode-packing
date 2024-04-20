@@ -128,7 +128,7 @@ const PackageScanning = () => {
     const packagingId = event.target?.id.value;
 
     if (packagingId) {
-      const packaging = findPackagingById(packagingId);
+      const packaging = findPackagingById(packagingId.toUpperCase());
       if (packaging) {
         if (packaging.status === PACKED_STATUS.PENDING) {
           alert(`กล่องเลขที่ ${packaging.id} ยังไม่ถูกจัดสินค้า`);

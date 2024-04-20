@@ -140,7 +140,7 @@ const ProductScanning = () => {
     const productId = event.target?.id.value;
 
     if (productId) {
-      const product = findProductById(productId);
+      const product = findProductById(productId.toUpperCase());
       if (product) {
         if (product.status === PACKED_STATUS.PACKED) {
           alert(`สินค้าเลขที่ ${product.id} ได้ถูกจัดสินค้าแล้ว`);
