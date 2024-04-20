@@ -37,7 +37,7 @@ const Products = () => {
         />
         <TextField
           name="amount"
-          label="ราคาสินค้า"
+          label="จำนวนสินค้า"
           type="number"
           onChange={(event) =>
             setNewProduct({ ...newProduct, amount: Number(event.target.value) })

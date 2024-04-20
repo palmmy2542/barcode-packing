@@ -12,7 +12,7 @@ export const columns: GridColDef[] = [
   },
   {
     field: "amount",
-    headerName: "ราคาสินค้า",
+    headerName: "จำนวนสินค้า",
     width: 150,
     editable: true,
   },
