@@ -7,7 +7,8 @@ import { PACKED_STATUS, Product } from "../../contexts/PackingProvider/types";
 
 const Products = () => {
   const { products, setProducts } = usePacking();
-  const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({
+  const [newProduct, setNewProduct] = useState<Product>({
+    id: "",
     name: "",
     amount: 100,
     createdAt: new Date(),
@@ -16,10 +17,7 @@ const Products = () => {
   });
 
   const handleAddProduct = () => {
-    setProducts([
-      ...products,
-      { id: `P00${products.length + 1}`, ...newProduct },
-    ]);
+    setProducts([...products, newProduct]);
   };
   return (
     <>
@@ -27,6 +25,13 @@ const Products = () => {
         สินค้าทั้งหมด
       </Typography>
       <Box display={"flex"} gap={2} my={2}>
+        <TextField
+          name="id"
+          label="รหัสสินค้า"
+          onChange={(event) =>
+            setNewProduct({ ...newProduct, id: event.target.value })
+          }
+        />
         <TextField
           name="name"
           label="ชื่อสินค้า"
