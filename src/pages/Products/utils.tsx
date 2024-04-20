@@ -39,4 +39,23 @@ export const columns: GridColDef[] = [
       }
     },
   },
+  {
+    field: "updatedAt",
+    headerName: "อัปเดตเมื่อ",
+    width: 200,
+    align: "center",
+    headerAlign: "center",
+    hideable: true,
+    renderCell: (params) => {
+      if (params.value) {
+        return new Date(params.value).toLocaleDateString("th-TH", {
+          day: "numeric",
+          month: "short",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        });
+      }
+    },
+  },
 ];
