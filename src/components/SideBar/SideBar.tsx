@@ -108,6 +108,7 @@ export default function PersistentDrawerLeft({ main }: { main: JSX.Element }) {
         <Divider />
         <List>
           {[
+            { text: "แสกนสินค้า", path: "/scanning", icon: <InboxIcon /> },
             { text: "สินค้าทั้งหมด", path: "/", icon: <InboxIcon /> },
             { text: "กล่อง/ลังทั้งหมด", path: "/cases", icon: <MailIcon /> },
             { text: "พาเลสทั้งหมด", path: "/palettes", icon: <MailIcon /> },

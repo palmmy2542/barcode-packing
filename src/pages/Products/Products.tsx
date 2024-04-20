@@ -1,22 +1,11 @@
 import { Box, Chip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { usePacking } from "../../contexts/PackingProvider";
 
 enum PROUDCT_PACKED_STATUS {
   READY = "READY",
   PACKED = "PACKED",
 }
-
-const rows = [
-  { id: 1, name: "Product 1", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  { id: 2, name: "Product 2", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  { id: 3, name: "Product 3", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  {
-    id: 4,
-    name: "Product 4",
-    price: 100,
-    status: PROUDCT_PACKED_STATUS.PACKED,
-  },
-];
 
 const columns: GridColDef<(typeof rows)[number]>[] = [
   { field: "id", headerName: "ID", width: 90 },
@@ -58,10 +47,11 @@ const columns: GridColDef<(typeof rows)[number]>[] = [
 ];
 
 const Products = () => {
+  const { products } = usePacking();
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={products}
         columns={columns}
         initialState={{
           pagination: {
