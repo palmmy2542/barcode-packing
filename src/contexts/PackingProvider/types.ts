@@ -19,7 +19,7 @@ export type Packaging = {
 export type Product = {
   id: string;
   name: string;
-  price: number;
+  amount: number;
   status: PACKED_STATUS;
   packingId?: string | null;
   createdAt: Date;

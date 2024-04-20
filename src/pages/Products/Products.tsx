@@ -9,7 +9,7 @@ const Products = () => {
   const { products, setProducts } = usePacking();
   const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({
     name: "",
-    price: 100,
+    amount: 100,
     createdAt: new Date(),
     updatedAt: new Date(),
     status: PACKED_STATUS.READY,
@@ -36,11 +36,11 @@ const Products = () => {
           required
         />
         <TextField
-          name="price"
+          name="amount"
           label="ราคาสินค้า"
           type="number"
           onChange={(event) =>
-            setNewProduct({ ...newProduct, price: Number(event.target.value) })
+            setNewProduct({ ...newProduct, amount: Number(event.target.value) })
           }
           required
         />

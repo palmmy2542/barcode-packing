@@ -11,7 +11,7 @@ export const columns: GridColDef[] = [
     editable: true,
   },
   {
-    field: "price",
+    field: "amount",
     headerName: "ราคาสินค้า",
     width: 150,
     editable: true,
