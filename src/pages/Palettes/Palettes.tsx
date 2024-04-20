@@ -6,8 +6,23 @@ import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
 import { columns as packingCaseColumns } from "../PackingCases/utils";
 
 const Palettes = () => {
-  const { palettes, findPaletteById } = usePacking();
+  const { setPalettes, palettes, findPaletteById } = usePacking();
   const [selectedId, setSelectedId] = useState<string>("");
+
+  const handleAddPalette = () => {
+    setPalettes([
+      ...palettes,
+      {
+        id: `PL00${palettes.length + 1}`,
+        ...{
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          status: PACKED_STATUS.PENDING,
+        },
+      },
+    ]);
+  };
+
   const packagingInPalette = useMemo(
     () => findPaletteById(selectedId)?.packagings ?? [],
     [findPaletteById, selectedId]
@@ -91,6 +106,11 @@ const Palettes = () => {
 
   return (
     <>
+      <Box display={"flex"} gap={2} my={2}>
+        <Button variant="contained" onClick={handleAddPalette}>
+          เพิ่มกล่อง
+        </Button>
+      </Box>
       <Typography variant="h5" textAlign={"left"}>
         พาเลสทั้งหมด
       </Typography>

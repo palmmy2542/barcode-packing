@@ -7,8 +7,22 @@ import { columns as productColumns } from "../Products/utils";
 import { columns as packingCaseColumns } from "./utils";
 
 const PackingCases = () => {
-  const { packagings, findPackagingById } = usePacking();
+  const { setPackagings, packagings, findPackagingById } = usePacking();
   const [selectedId, setSelectedId] = useState<string>("");
+
+  const handleAddPackaging = () => {
+    setPackagings([
+      ...packagings,
+      {
+        id: `B00${packagings.length + 1}`,
+        ...{
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          status: PACKED_STATUS.PENDING,
+        },
+      },
+    ]);
+  };
 
   const productInPackaging = useMemo(
     () => findPackagingById(selectedId)?.products ?? [],
@@ -45,6 +59,11 @@ const PackingCases = () => {
 
   return (
     <>
+      <Box display={"flex"} gap={2} my={2}>
+        <Button variant="contained" onClick={handleAddPackaging}>
+          เพิ่มกล่อง
+        </Button>
+      </Box>
       <Typography variant="h5" textAlign={"left"}>
         กล่องทั้งหมด
       </Typography>
