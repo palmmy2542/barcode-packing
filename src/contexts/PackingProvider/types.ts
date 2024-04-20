@@ -9,7 +9,7 @@ export enum PACKED_STATUS {
 export type Packaging = {
   id: string;
   status: string;
-  paletteId?: string;
+  paletteId?: string | null;
   products?: Product[];
   createdAt: Date;
   updatedAt: Date;
@@ -44,6 +44,7 @@ export type IPackingContext = {
   setProducts: (products: Product[]) => void;
   setPackagingById: (packagingId: string, packaging: Packaging) => void;
   setPackagings: (packagings: Packaging[]) => void;
+  setPaletteById: (paletteId: string, palette: Palette) => void;
   setPalettes: (palettes: Palette[]) => void;
   findProductById: (productId: string) => Product | null;
   findPackagingById: (packagingId: string) => Packaging | null;
@@ -52,6 +53,11 @@ export type IPackingContext = {
   removeProductInPackagingByProductId: (
     packagingId: string,
     productId: string
+  ) => void;
+  addPackagingInPalette: (paletteId: string, packaging: Packaging) => void;
+  removePackagingInPaletteByPackagingId: (
+    paletteId: string,
+    packagingId: string
   ) => void;
 };
 

@@ -12,16 +12,16 @@ import { useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dialog from "../../components/Dialog";
 import { usePacking } from "../../contexts/PackingProvider";
-import { PACKED_STATUS, Packaging } from "../../contexts/PackingProvider/types";
+import { PACKED_STATUS, Palette } from "../../contexts/PackingProvider/types";
 
 const renderStatusText = (status: PACKED_STATUS) => {
   switch (status) {
     case PACKED_STATUS.READY:
-      return "กล่องจัดสินค้าครบแล้ว";
+      return "พาเลสจัดกล่องครบแล้ว";
     case PACKED_STATUS.PACKED:
-      return "กล่องถูกนำส่งพาเลสแล้ว";
+      return "พาเลสถูกนำส่งแล้ว";
     default:
-      return "กล่องยังไม่ถูกจัดสินค้า";
+      return "พาเลสยังไม่ถูกจัดกล่อง";
   }
 };
 
@@ -30,49 +30,37 @@ const renderStatusTextColor = (status: PACKED_STATUS) => {
     case PACKED_STATUS.READY:
       return "warning";
     case PACKED_STATUS.PACKED:
-      return "primary";
+      return "success";
     default:
       return "default";
   }
 };
 
-const ProductScanning = () => {
+const PackageScanning = () => {
   const { id = "" } = useParams();
   const [open, setOpen] = useState(false);
   const {
-    findProductById,
     findPackagingById,
-    addProductInPackaging,
-    removeProductInPackagingByProductId,
-    setPackagingById,
+    findPaletteById,
+    addPackagingInPalette,
+    removePackagingInPaletteByPackagingId,
+    setPaletteById,
   } = usePacking();
 
-  const packedPackaging = useMemo(() => {
+  const packedPalette = useMemo(() => {
     if (!id) return null;
-    const packaging = findPackagingById(id.toUpperCase());
+    const packaging = findPaletteById(id.toUpperCase());
 
     return packaging;
-  }, [findPackagingById, id]);
+  }, [findPaletteById, id]);
 
-  const packedPackagingStatus = packedPackaging?.status as PACKED_STATUS;
+  const packedPaletteStatus = packedPalette?.status as PACKED_STATUS;
 
-  const disbled = packedPackagingStatus === PACKED_STATUS.READY;
+  const disbled = packedPaletteStatus === PACKED_STATUS.READY;
 
   const columns: GridColDef[] = useMemo(
     () => [
       { field: "id", headerName: "ID", width: 90 },
-      {
-        field: "name",
-        headerName: "ชื่อสินค้า",
-        width: 150,
-        editable: true,
-      },
-      {
-        field: "price",
-        headerName: "ราคาสินค้า",
-        width: 150,
-        editable: true,
-      },
       {
         field: "status",
         headerName: "สถานะ",
@@ -84,7 +72,7 @@ const ProductScanning = () => {
           if (params.value === PACKED_STATUS.READY) {
             return (
               <Chip
-                label="ยังไม่จัดสินค้า"
+                label="ยังไม่จัดกล่อง"
                 color="warning"
                 sx={{ width: "100%" }}
               />
@@ -92,7 +80,7 @@ const ProductScanning = () => {
           } else if (params.value === PACKED_STATUS.PACKED) {
             return (
               <Chip
-                label="จัดสินค้าแล้ว"
+                label="จัดกล่องแล้ว"
                 color="success"
                 sx={{ width: "100%" }}
               />
@@ -110,7 +98,7 @@ const ProductScanning = () => {
             return (
               <IconButton
                 onClick={() => {
-                  removeProductInPackagingByProductId(id, params.row.id);
+                  removePackagingInPaletteByPackagingId(id, params.row.id);
                 }}
                 disabled={disbled}
                 color="error"
@@ -122,31 +110,31 @@ const ProductScanning = () => {
         },
       },
     ],
-    [disbled, id, removeProductInPackagingByProductId]
+    [disbled, id, removePackagingInPaletteByPackagingId]
   );
 
   const handlePacked = () => {
-    setPackagingById(id, {
-      ...findPackagingById(id),
-      status: PACKED_STATUS.READY,
-    } as Packaging);
-    alert(`แพ็คกล่องเลขที่ ${id} เรียบร้อยแล้ว`);
+    setPaletteById(id, {
+      ...findPaletteById(id),
+      status: PACKED_STATUS.PACKED,
+    } as Palette);
+    alert(`แพ็คพาเลสเลขที่ ${id} เรียบร้อยแล้ว`);
     setOpen(false);
   };
 
   const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const productId = event.target?.id.value;
+    const packagingId = event.target?.id.value;
 
-    if (productId) {
-      const product = findProductById(productId);
-      if (product) {
-        if (product.status === PACKED_STATUS.PACKED) {
-          alert(`สินค้าเลขที่ ${product.id} ได้ถูกจัดสินค้าแล้ว`);
+    if (packagingId) {
+      const packaging = findPackagingById(packagingId);
+      if (packaging) {
+        if (packaging.status === PACKED_STATUS.PACKED) {
+          alert(`กล่องเลขที่ ${packaging.id} ได้ถูกจัดกล่องแล้ว`);
         } else {
-          addProductInPackaging(id, product);
+          addPackagingInPalette(id, packaging);
         }
-      } else alert(`ไม่พบรหัสสินค้าเลขที่ ${productId}`);
+      } else alert(`ไม่พบรหัสกล่องเลขที่ ${packagingId}`);
     }
     event.target.id.value = null;
   };
@@ -156,25 +144,25 @@ const ProductScanning = () => {
       <Dialog
         open={open}
         content="เมื่อยืนยันแล้ว ไม่สามารถยกเลิกได้"
-        title="ยืนยันการจัดสินค้า ?"
+        title="ยืนยันการจัดพาเลส ?"
         handleClose={() => setOpen(false)}
         handleSubmit={handlePacked}
       />
       <Box textAlign={"right"}>
         <Chip
-          label={renderStatusText(packedPackagingStatus)}
-          color={renderStatusTextColor(packedPackagingStatus)}
+          label={renderStatusText(packedPaletteStatus)}
+          color={renderStatusTextColor(packedPaletteStatus)}
         />
       </Box>
 
       <Box textAlign={"left"}>
-        <Typography>กำลังแพ็คกล่องเลขที่ {id}</Typography>
+        <Typography>กำลังแพ็คพาเลสเลขที่ {id}</Typography>
         <form onSubmit={onSubmit}>
           <Box display={"flex"} gap={2}>
             <TextField
               name="id"
               fullWidth
-              placeholder={`ระบุรหัสสินค้าที่ต้องการแพ็คลงกล่องเลขที่ ${id}`}
+              placeholder={`ระบุรหัสกล่องที่ต้องการแพ็คลงพาเลสเลขที่ ${id}`}
               disabled={disbled}
             />
             <Button variant="contained" type="submit">
@@ -182,10 +170,10 @@ const ProductScanning = () => {
             </Button>
           </Box>
         </form>
-        <Typography mt={2}>สินค้าทั้งหมดในกล่อง</Typography>
+        <Typography mt={2}>กล่องทั้งหมดในพาเลส</Typography>
         <Box sx={{ height: 400, width: "100%" }} mb={2}>
           <DataGrid
-            rows={packedPackaging?.products ?? []}
+            rows={packedPalette?.packagings ?? []}
             columns={columns}
             initialState={{
               pagination: {
@@ -205,7 +193,7 @@ const ProductScanning = () => {
             onClick={() => setOpen(true)}
             disabled={disbled}
           >
-            ยืนยันการแพ็คกล่อง
+            ยืนยันการแพ็คพาเลส
           </Button>
         </Box>
       </Box>
@@ -213,4 +201,4 @@ const ProductScanning = () => {
   );
 };
 
-export default ProductScanning;
+export default PackageScanning;

@@ -18,12 +18,15 @@ const PackingContext = createContext<IPackingContext>({
   setProducts: () => {},
   setPackagings: () => {},
   setPackagingById: () => {},
+  setPaletteById: () => {},
   setPalettes: () => {},
   findPackagingById: () => null,
   findProductById: () => null,
   findPaletteById: () => null,
   addProductInPackaging: () => {},
   removeProductInPackagingByProductId: () => {},
+  addPackagingInPalette: () => {},
+  removePackagingInPaletteByPackagingId: () => {},
 });
 
 const mockProducts: Product[] = [
@@ -101,11 +104,8 @@ const mockPalettes: Palette[] = [
 const PackingProvider = (props: PackingProviderProps) => {
   const { children } = props;
   const [products, setProducts] = useState<Product[]>(mockProducts);
-  console.log("🚀 ~ PackingProvider ~ products:", products);
   const [packagings, setPackagings] = useState<Packaging[]>(mockPackagings);
-  console.log("🚀 ~ PackingProvider ~ packagings:", packagings);
   const [palettes, setPalettes] = useState<Palette[]>(mockPalettes);
-  console.log("🚀 ~ PackingProvider ~ palettes:", palettes);
 
   const handleSetProductById = (productId: string, product: Product) => {
     setProducts((prev) =>
@@ -138,6 +138,14 @@ const PackingProvider = (props: PackingProviderProps) => {
     setPalettes(palettes);
   };
 
+  const handleSetPaletteById = (paletteId: string, palette: Palette) => {
+    setPalettes((prev) =>
+      prev.map((p) =>
+        p.id === paletteId ? { ...palette, updatedAt: new Date() } : p
+      )
+    );
+  };
+
   const handleAddProductInPackaging = (
     packagingId: string,
     product: Product
@@ -161,6 +169,34 @@ const PackingProvider = (props: PackingProviderProps) => {
       })
     );
     handleSetProductById(product.id, productWithPackedStatus);
+  };
+
+  const handleAddPackagingInPalette = (
+    paletteId: string,
+    packaging: Packaging
+  ) => {
+    const packagingWithPackedStatus: Packaging = {
+      ...packaging,
+      status: PACKED_STATUS.PACKED,
+      paletteId: paletteId,
+      updatedAt: new Date(),
+    };
+    setPalettes((prev) =>
+      prev.map((palette) => {
+        if (palette.id === paletteId) {
+          return {
+            ...palette,
+            packagings: [
+              ...(palette?.packagings ?? []),
+              packagingWithPackedStatus,
+            ],
+            updatedAt: new Date(),
+          };
+        }
+        return palette;
+      })
+    );
+    handleSetPackagingById(packaging.id, packagingWithPackedStatus);
   };
 
   const handleRemoveProductInPackagingByProductId = (
@@ -194,6 +230,40 @@ const PackingProvider = (props: PackingProviderProps) => {
     }
   };
 
+  const handleRemovePackagingInPaletteByPackagingId = (
+    paletteId: string,
+    packagingId: string
+  ) => {
+    const packaging = handleFindPackagingById(packagingId);
+    if (packaging) {
+      const packagingWithReadyStatus: Packaging = {
+        ...packaging,
+        status: PACKED_STATUS.READY,
+        paletteId: null,
+        updatedAt: new Date(),
+      };
+      setPalettes((prev) =>
+        prev.map((palette) => {
+          if (palette.id === paletteId) {
+            const packagings = palette.packagings?.filter(
+              (packaging) => packaging.id !== packagingId
+            );
+            return {
+              ...palette,
+              packagings,
+              updatedAt: new Date(),
+            };
+          }
+          return palette;
+        })
+      );
+      handleSetPackagingById(
+        packagingId,
+        packagingWithReadyStatus as Packaging
+      );
+    }
+  };
+
   const handleFindProductById = (productId: string) => {
     return products.find((product) => product.id === productId) ?? null;
   };
@@ -216,6 +286,7 @@ const PackingProvider = (props: PackingProviderProps) => {
         setProducts: handleSetProducts,
         setPackagingById: handleSetPackagingById,
         setPackagings: handleSetPackagings,
+        setPaletteById: handleSetPaletteById,
         setPalettes: handleSetPalettes,
         findProductById: handleFindProductById,
         findPackagingById: handleFindPackagingById,
@@ -223,6 +294,9 @@ const PackingProvider = (props: PackingProviderProps) => {
         addProductInPackaging: handleAddProductInPackaging,
         removeProductInPackagingByProductId:
           handleRemoveProductInPackagingByProductId,
+        addPackagingInPalette: handleAddPackagingInPalette,
+        removePackagingInPaletteByPackagingId:
+          handleRemovePackagingInPaletteByPackagingId,
       }}
     >
       {children ?? <Outlet />}

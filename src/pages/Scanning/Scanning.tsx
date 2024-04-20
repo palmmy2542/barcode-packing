@@ -17,7 +17,7 @@ const Scanning = () => {
       } else {
         const palette = findPaletteById(id);
         if (palette) {
-          console.log(palette);
+          navigate(`/package-packing/${id}`);
         } else {
           alert(`ไม่พบรหัสกล่องหรือพาเลส เลขที่ ${id}`);
         }

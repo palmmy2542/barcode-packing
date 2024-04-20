@@ -1,67 +1,52 @@
 import { Box, Chip } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { usePacking } from "../../contexts/PackingProvider";
+import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
 
-enum PROUDCT_PACKED_STATUS {
-  READY = "READY",
-  PACKED = "PACKED",
-}
-
-const rows = [
-  { id: 1, name: "Product 1", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  { id: 2, name: "Product 2", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  { id: 3, name: "Product 3", price: 100, status: PROUDCT_PACKED_STATUS.READY },
-  {
-    id: 4,
-    name: "Product 4",
-    price: 100,
-    status: PROUDCT_PACKED_STATUS.PACKED,
-  },
-];
-
-const columns: GridColDef<(typeof rows)[number]>[] = [
+const columns: GridColDef[] = [
   { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "name",
-    headerName: "ชื่อสินค้า",
-    width: 150,
-    editable: true,
-  },
-  {
-    field: "price",
-    headerName: "ราคาสินค้า",
-    width: 150,
-    editable: true,
-  },
   {
     field: "status",
     headerName: "สถานะ",
-    width: 150,
+    width: 200,
     align: "center",
     headerAlign: "center",
     hideable: true,
     renderCell: (params) => {
-      if (params.value === PROUDCT_PACKED_STATUS.READY) {
+      if (params.value === PACKED_STATUS.READY) {
         return (
           <Chip
-            label="ยังไม่จัดสินค้า"
+            label="กล่องจัดสินค้าครบแล้ว"
             color="warning"
             sx={{ width: "100%" }}
           />
         );
-      } else if (params.value === PROUDCT_PACKED_STATUS.PACKED) {
+      } else if (params.value === PACKED_STATUS.PACKED) {
         return (
-          <Chip label="จัดสินค้าแล้ว" color="success" sx={{ width: "100%" }} />
+          <Chip
+            label="กล่องถูกนำส่งพาเลสแล้ว"
+            color="success"
+            sx={{ width: "100%" }}
+          />
         );
-      }
+      } else
+        return (
+          <Chip
+            label="กล่องยังไม่ถูกจัดสินค้า"
+            color="default"
+            sx={{ width: "100%" }}
+          />
+        );
     },
   },
 ];
 
 const PackingCases = () => {
+  const { packagings } = usePacking();
   return (
     <Box sx={{ height: 400, width: "100%" }}>
       <DataGrid
-        rows={rows}
+        rows={packagings}
         columns={columns}
         initialState={{
           pagination: {
@@ -71,7 +56,6 @@ const PackingCases = () => {
           },
         }}
         pageSizeOptions={[5]}
-        checkboxSelection
         disableRowSelectionOnClick
       />
     </Box>
