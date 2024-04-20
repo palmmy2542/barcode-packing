@@ -7,7 +7,7 @@ import ProductScanning from "./pages/ProductScanning";
 import Products from "./pages/Products";
 import Scanning from "./pages/Scanning";
 
-const routes: Route[] = [
+const routes = [
   { path: "/product-packing/:id", element: <ProductScanning /> },
   { path: "/package-packing/:id", element: <PackageScanning /> },
   { path: "/scanning", element: <Scanning /> },

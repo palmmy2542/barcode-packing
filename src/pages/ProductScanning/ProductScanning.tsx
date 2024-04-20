@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dialog from "../../components/Dialog";
 import { usePacking } from "../../contexts/PackingProvider";
@@ -39,6 +39,7 @@ const renderStatusTextColor = (status: PACKED_STATUS) => {
 const ProductScanning = () => {
   const { id = "" } = useParams();
   const [open, setOpen] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
   const {
     findProductById,
     findPackagingById,
@@ -134,7 +135,7 @@ const ProductScanning = () => {
     setOpen(false);
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: any) => {
     event.preventDefault();
     const productId = event.target?.id.value;
 
@@ -148,7 +149,7 @@ const ProductScanning = () => {
         }
       } else alert(`ไม่พบรหัสสินค้าเลขที่ ${productId}`);
     }
-    event.target.id.value = null;
+    form.current?.reset();
   };
 
   return (
@@ -169,7 +170,7 @@ const ProductScanning = () => {
 
       <Box textAlign={"left"}>
         <Typography>กำลังแพ็คกล่องเลขที่ {id}</Typography>
-        <form onSubmit={onSubmit}>
+        <form ref={form} onSubmit={onSubmit}>
           <Box display={"flex"} gap={2}>
             <TextField
               name="id"

@@ -6,7 +6,7 @@ const Scanning = () => {
   const { findPackagingById, findPaletteById } = usePacking();
   const navigate = useNavigate();
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: any) => {
     event.preventDefault();
     const id = event.target?.id.value;
 

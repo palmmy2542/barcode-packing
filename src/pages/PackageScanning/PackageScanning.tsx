@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dialog from "../../components/Dialog";
 import { usePacking } from "../../contexts/PackingProvider";
@@ -39,6 +39,7 @@ const renderStatusTextColor = (status: PACKED_STATUS) => {
 const PackageScanning = () => {
   const { id = "" } = useParams();
   const [open, setOpen] = useState(false);
+  const form = useRef<HTMLFormElement>(null);
   const {
     findPackagingById,
     findPaletteById,
@@ -122,21 +123,23 @@ const PackageScanning = () => {
     setOpen(false);
   };
 
-  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const onSubmit = (event: any) => {
     event.preventDefault();
     const packagingId = event.target?.id.value;
 
     if (packagingId) {
       const packaging = findPackagingById(packagingId);
       if (packaging) {
-        if (packaging.status === PACKED_STATUS.PACKED) {
+        if (packaging.status === PACKED_STATUS.PENDING) {
+          alert(`กล่องเลขที่ ${packaging.id} ยังไม่ถูกจัดสินค้า`);
+        } else if (packaging.status === PACKED_STATUS.PACKED) {
           alert(`กล่องเลขที่ ${packaging.id} ได้ถูกจัดกล่องแล้ว`);
         } else {
           addPackagingInPalette(id, packaging);
         }
       } else alert(`ไม่พบรหัสกล่องเลขที่ ${packagingId}`);
     }
-    event.target.id.value = null;
+    form.current?.reset();
   };
 
   return (
@@ -157,7 +160,7 @@ const PackageScanning = () => {
 
       <Box textAlign={"left"}>
         <Typography>กำลังแพ็คพาเลสเลขที่ {id}</Typography>
-        <form onSubmit={onSubmit}>
+        <form ref={form} id="myForm" onSubmit={onSubmit}>
           <Box display={"flex"} gap={2}>
             <TextField
               name="id"
