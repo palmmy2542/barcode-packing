@@ -1,64 +1,93 @@
-import { Box, Chip } from "@mui/material";
+import { Box, Button, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { useMemo, useState } from "react";
 import { usePacking } from "../../contexts/PackingProvider";
 import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
-
-const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
-  {
-    field: "status",
-    headerName: "สถานะ",
-    width: 200,
-    align: "center",
-    headerAlign: "center",
-    hideable: true,
-    renderCell: (params) => {
-      if (params.value === PACKED_STATUS.READY) {
-        return (
-          <Chip
-            label="กล่องจัดสินค้าครบแล้ว"
-            color="warning"
-            sx={{ width: "100%" }}
-          />
-        );
-      } else if (params.value === PACKED_STATUS.PACKED) {
-        return (
-          <Chip
-            label="กล่องถูกนำส่งพาเลสแล้ว"
-            color="success"
-            sx={{ width: "100%" }}
-          />
-        );
-      } else
-        return (
-          <Chip
-            label="กล่องยังไม่ถูกจัดสินค้า"
-            color="default"
-            sx={{ width: "100%" }}
-          />
-        );
-    },
-  },
-];
+import { columns as productColumns } from "../Products/utils";
+import { columns as packingCaseColumns } from "./utils";
 
 const PackingCases = () => {
-  const { packagings } = usePacking();
+  const { packagings, findPackagingById } = usePacking();
+  const [selectedId, setSelectedId] = useState<string>("");
+
+  const productInPackaging = useMemo(
+    () => findPackagingById(selectedId)?.products ?? [],
+    [findPackagingById, selectedId]
+  );
+
+  const columns: GridColDef[] = useMemo(() => {
+    return [
+      ...packingCaseColumns,
+      {
+        field: "action",
+        headerName: "",
+        width: 200,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          if (
+            params.row.status === PACKED_STATUS.READY ||
+            params.row.status === PACKED_STATUS.PACKED
+          ) {
+            return (
+              <Button
+                variant="text"
+                onClick={() => setSelectedId(params.row.id)}
+              >
+                รายละเอียดสินค้า
+              </Button>
+            );
+          }
+        },
+      },
+    ];
+  }, []);
+
   return (
-    <Box sx={{ height: 400, width: "100%" }}>
-      <DataGrid
-        rows={packagings}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 5,
+    <>
+      <Typography variant="h5" textAlign={"left"}>
+        กล่องทั้งหมด
+      </Typography>
+      <Box sx={{ height: 400, width: "100%" }}>
+        <DataGrid
+          rows={packagings}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 5,
+              },
             },
-          },
-        }}
-        pageSizeOptions={[5]}
-        disableRowSelectionOnClick
-      />
-    </Box>
+          }}
+          pageSizeOptions={[5]}
+          disableRowSelectionOnClick
+        />
+      </Box>
+      {productInPackaging.length > 0 ? (
+        <>
+          <Typography mt={2} textAlign={"left"}>
+            สินค้าในกล่องเลขที่ {selectedId}
+          </Typography>
+          <Box sx={{ height: 400, width: "100%" }}>
+            <DataGrid
+              rows={productInPackaging}
+              columns={productColumns}
+              initialState={{
+                pagination: {
+                  paginationModel: {
+                    pageSize: 5,
+                  },
+                },
+              }}
+              pageSizeOptions={[5]}
+              disableRowSelectionOnClick
+            />
+          </Box>
+        </>
+      ) : (
+        <></>
+      )}
+    </>
   );
 };
 
