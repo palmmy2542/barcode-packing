@@ -9,7 +9,7 @@ const Products = () => {
   const { products, setProducts } = usePacking();
   const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({
     name: "",
-    amount: 100,
+    amount: 0,
     createdAt: new Date(),
     updatedAt: new Date(),
     status: PACKED_STATUS.READY,
