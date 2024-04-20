@@ -31,6 +31,7 @@ const Products = () => {
           onChange={(event) =>
             setNewProduct({ ...newProduct, id: event.target.value })
           }
+          required
         />
         <TextField
           name="name"
