@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dialog from "../../components/Dialog";
@@ -176,6 +176,7 @@ const PackageScanning = () => {
         <Typography mt={2}>กล่องทั้งหมดในพาเลส</Typography>
         <Box sx={{ height: 400, width: "100%" }} mb={2}>
           <DataGrid
+            slots={{ toolbar: GridToolbar }}
             rows={packedPalette?.packagings ?? []}
             columns={columns}
             initialState={{

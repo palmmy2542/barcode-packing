@@ -1,5 +1,5 @@
 import { Box, Button, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { usePacking } from "../../contexts/PackingProvider";
 import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
@@ -78,6 +78,7 @@ const PackingCases = () => {
       </Typography>
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
+          slots={{ toolbar: GridToolbar }}
           rows={packagings}
           columns={columns}
           initialState={{
@@ -101,6 +102,7 @@ const PackingCases = () => {
           </Typography>
           <Box sx={{ height: 400, width: "100%" }}>
             <DataGrid
+              slots={{ toolbar: GridToolbar }}
               rows={productInPackaging}
               columns={productColumns}
               initialState={{

@@ -1,5 +1,5 @@
 import { Box, Button, Chip, Typography } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
 import { toast } from "react-toastify";
 import { usePacking } from "../../contexts/PackingProvider";
@@ -125,6 +125,7 @@ const Palettes = () => {
       </Typography>
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
+          slots={{ toolbar: GridToolbar }}
           rows={palettes}
           columns={columns}
           initialState={{
@@ -148,6 +149,7 @@ const Palettes = () => {
           </Typography>
           <Box sx={{ height: 400, width: "100%" }}>
             <DataGrid
+              slots={{ toolbar: GridToolbar }}
               rows={packagingInPalette}
               columns={packingCaseColumns}
               initialState={{

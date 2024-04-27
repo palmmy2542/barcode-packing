@@ -1,5 +1,5 @@
 import { Box, Button, TextField, Typography } from "@mui/material";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { usePacking } from "../../contexts/PackingProvider";
 import { columns } from "./utils";
 import { useState } from "react";
@@ -72,6 +72,7 @@ const Products = () => {
       </Box>
       <Box sx={{ height: 400, width: "100%" }}>
         <DataGrid
+          slots={{ toolbar: GridToolbar }}
           rows={products}
           columns={columns}
           initialState={{

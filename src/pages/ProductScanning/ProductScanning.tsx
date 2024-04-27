@@ -7,7 +7,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useMemo, useRef, useState } from "react";
 import { useParams } from "react-router-dom";
 import Dialog from "../../components/Dialog";
@@ -186,6 +186,7 @@ const ProductScanning = () => {
         <Typography mt={2}>สินค้าทั้งหมดในกล่อง</Typography>
         <Box sx={{ height: 400, width: "100%" }} mb={2}>
           <DataGrid
+            slots={{ toolbar: GridToolbar }}
             rows={packedPackaging?.products ?? []}
             columns={columns}
             initialState={{
