@@ -50,7 +50,7 @@ const PackageScanning = () => {
 
   const packedPalette = useMemo(() => {
     if (!id) return null;
-    const packaging = findPaletteById(id.toUpperCase());
+    const packaging = findPaletteById(id);
 
     return packaging;
   }, [findPaletteById, id]);
@@ -128,7 +128,7 @@ const PackageScanning = () => {
     const packagingId = event.target?.id.value;
 
     if (packagingId) {
-      const packaging = findPackagingById(packagingId.toUpperCase());
+      const packaging = findPackagingById(packagingId);
       if (packaging) {
         if (packaging.status === PACKED_STATUS.PENDING) {
           alert(`กล่องเลขที่ ${packaging.id} ยังไม่ถูกจัดสินค้า`);

@@ -1,6 +1,13 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  doc,
+  getDocs,
+  getFirestore,
+  updateDoc,
+} from "firebase/firestore";
 import { Packaging, Palette, Product } from "./contexts/PackingProvider/types";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -47,16 +54,34 @@ async function addProduct(product: Omit<Product, "id">) {
   }
 }
 
+async function updateProductById(id: string, product: Omit<Product, "id">) {
+  try {
+    const productsCol = doc(db, "products", id);
+    const docRef = await updateDoc(productsCol, product);
+    return docRef;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function getPackagings() {
   const packagingsCol = collection(db, "packagings");
   const packagingSnapshot = await getDocs(packagingsCol);
   const packagingList = packagingSnapshot.docs.map((doc) => {
     const result = doc.data();
-    const { createdAt, updatedAt, ...rest } = result;
+    const { createdAt, updatedAt, products, ...rest } = result;
     return {
       id: doc.id,
       createdAt: createdAt.toDate(),
       updatedAt: updatedAt.toDate(),
+      products: products?.map((product: any) => {
+        const { createdAt, updatedAt, ...rest } = product;
+        return {
+          ...rest,
+          createdAt: createdAt.toDate(),
+          updatedAt: updatedAt.toDate(),
+        };
+      }),
       ...rest,
     } as Packaging;
   });
@@ -73,16 +98,37 @@ async function addPackaging(packaging: Omit<Packaging, "id">) {
   }
 }
 
+async function updatePackagingById(
+  id: string,
+  packaging: Omit<Packaging, "id">
+) {
+  try {
+    const packagingsCol = doc(db, "packagings", id);
+    const docRef = await updateDoc(packagingsCol, packaging);
+    return docRef;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 async function getPalettes() {
   const palettesCol = collection(db, "palettes");
   const paletteSnapshot = await getDocs(palettesCol);
   const paletteList = paletteSnapshot.docs.map((doc) => {
     const result = doc.data();
-    const { createdAt, updatedAt, ...rest } = result;
+    const { createdAt, updatedAt, packagings, ...rest } = result;
     return {
       id: doc.id,
       createdAt: createdAt.toDate(),
       updatedAt: updatedAt.toDate(),
+      packagings: packagings?.map((packaging: any) => {
+        const { createdAt, updatedAt, ...rest } = packaging;
+        return {
+          ...rest,
+          createdAt: createdAt.toDate(),
+          updatedAt: updatedAt.toDate(),
+        };
+      }),
       ...rest,
     } as Palette;
   });
@@ -99,11 +145,24 @@ async function addPalette(palette: Omit<Palette, "id">) {
   }
 }
 
+async function updatePaletteById(id: string, palette: Omit<Palette, "id">) {
+  try {
+    const palettesCol = doc(db, "palettes", id);
+    const docRef = await updateDoc(palettesCol, palette);
+    return docRef;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export {
-  getProducts,
+  addPackaging,
+  addPalette,
   addProduct,
   getPackagings,
-  addPackaging,
   getPalettes,
-  addPalette,
+  getProducts,
+  updatePackagingById,
+  updatePaletteById,
+  updateProductById,
 };

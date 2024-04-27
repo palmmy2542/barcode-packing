@@ -1,7 +1,14 @@
 import { createContext, useContext, useEffect, useState } from "react";
 
 import { Outlet } from "react-router-dom";
-import { getPackagings, getPalettes, getProducts } from "../../firebase";
+import {
+  getPackagings,
+  getPalettes,
+  getProducts,
+  updatePackagingById,
+  updatePaletteById,
+  updateProductById,
+} from "../../firebase";
 import {
   IPackingContext,
   PACKED_STATUS,
@@ -39,12 +46,42 @@ const PackingProvider = (props: PackingProviderProps) => {
   const [packagings, setPackagings] = useState<Packaging[]>([]);
   const [palettes, setPalettes] = useState<Palette[]>([]);
 
+  const getAllProducts = async (): Promise<Product[] | null> => {
+    try {
+      const products = await getProducts();
+      setProducts(products);
+      return products;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const getAllPackagings = async (): Promise<Packaging[] | null> => {
+    try {
+      const packagings = await getPackagings();
+      setPackagings(packagings);
+      return packagings;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  const getAllPalettes = async (): Promise<Palette[] | null> => {
+    try {
+      const palettes = await getPalettes();
+      setPalettes(palettes);
+      return palettes;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
   const handleSetProductById = (productId: string, product: Product) => {
-    setProducts((prev) =>
-      prev.map((p) =>
-        p.id === productId ? { ...product, updatedAt: new Date() } : p
-      )
-    );
+    updateProductById(productId, { ...product, updatedAt: new Date() });
+    getAllProducts();
   };
 
   const handleSetProducts = (products: Product[]) => {
@@ -59,11 +96,8 @@ const PackingProvider = (props: PackingProviderProps) => {
     packagingId: string,
     packaging: Packaging
   ) => {
-    setPackagings((prev) =>
-      prev.map((p) =>
-        p.id === packagingId ? { ...packaging, updatedAt: new Date() } : p
-      )
-    );
+    updatePackagingById(packagingId, { ...packaging, updatedAt: new Date() });
+    getAllPackagings();
   };
 
   const handleSetPalettes = (palettes: Palette[]) => {
@@ -71,11 +105,8 @@ const PackingProvider = (props: PackingProviderProps) => {
   };
 
   const handleSetPaletteById = (paletteId: string, palette: Palette) => {
-    setPalettes((prev) =>
-      prev.map((p) =>
-        p.id === paletteId ? { ...palette, updatedAt: new Date() } : p
-      )
-    );
+    updatePaletteById(paletteId, { ...palette, updatedAt: new Date() });
+    getAllPalettes();
   };
 
   const handleAddProductInPackaging = (
@@ -206,39 +237,6 @@ const PackingProvider = (props: PackingProviderProps) => {
 
   const handleFindPaletteById = (paletteId: string) => {
     return palettes.find((palette) => palette.id === paletteId) ?? null;
-  };
-
-  const getAllProducts = async (): Promise<Product[] | null> => {
-    try {
-      const products = await getProducts();
-      setProducts(products);
-      return products;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-  const getAllPackagings = async (): Promise<Packaging[] | null> => {
-    try {
-      const packagings = await getPackagings();
-      setPackagings(packagings);
-      return packagings;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
-  };
-
-  const getAllPalettes = async (): Promise<Palette[] | null> => {
-    try {
-      const palettes = await getPalettes();
-      setPalettes(palettes);
-      return palettes;
-    } catch (error) {
-      console.error(error);
-      return null;
-    }
   };
 
   useEffect(() => {
