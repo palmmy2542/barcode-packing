@@ -3,7 +3,7 @@ import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
 import { Chip } from "@mui/material";
 
 export const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
+  { field: "id", headerName: "ID", width: 200 },
   {
     field: "name",
     headerName: "บาร์โค๊ด",

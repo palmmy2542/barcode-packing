@@ -1,7 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
 import { addDoc, collection, getDocs, getFirestore } from "firebase/firestore";
-import { Product } from "./contexts/PackingProvider/types";
+import { Packaging, Palette, Product } from "./contexts/PackingProvider/types";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -21,7 +21,6 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Get a list of products from your database
 async function getProducts() {
   const productsCol = collection(db, "products");
   const productSnapshot = await getDocs(productsCol);
@@ -48,4 +47,63 @@ async function addProduct(product: Omit<Product, "id">) {
   }
 }
 
-export { getProducts, addProduct };
+async function getPackagings() {
+  const packagingsCol = collection(db, "packagings");
+  const packagingSnapshot = await getDocs(packagingsCol);
+  const packagingList = packagingSnapshot.docs.map((doc) => {
+    const result = doc.data();
+    const { createdAt, updatedAt, ...rest } = result;
+    return {
+      id: doc.id,
+      createdAt: createdAt.toDate(),
+      updatedAt: updatedAt.toDate(),
+      ...rest,
+    } as Packaging;
+  });
+  return packagingList;
+}
+
+async function addPackaging(packaging: Omit<Packaging, "id">) {
+  try {
+    const packagingsCol = collection(db, "packagings");
+    const docRef = await addDoc(packagingsCol, packaging);
+    return docRef;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+async function getPalettes() {
+  const palettesCol = collection(db, "palettes");
+  const paletteSnapshot = await getDocs(palettesCol);
+  const paletteList = paletteSnapshot.docs.map((doc) => {
+    const result = doc.data();
+    const { createdAt, updatedAt, ...rest } = result;
+    return {
+      id: doc.id,
+      createdAt: createdAt.toDate(),
+      updatedAt: updatedAt.toDate(),
+      ...rest,
+    } as Palette;
+  });
+  return paletteList;
+}
+
+async function addPalette(palette: Omit<Palette, "id">) {
+  try {
+    const palettesCol = collection(db, "palettes");
+    const docRef = await addDoc(palettesCol, palette);
+    return docRef;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+export {
+  getProducts,
+  addProduct,
+  getPackagings,
+  addPackaging,
+  getPalettes,
+  addPalette,
+};

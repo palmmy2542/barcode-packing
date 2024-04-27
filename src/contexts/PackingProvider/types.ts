@@ -60,6 +60,8 @@ export type IPackingContext = {
     packagingId: string
   ) => void;
   getAllProducts: () => Promise<Product[] | null>;
+  getAllPackagings: () => Promise<Packaging[] | null>;
+  getAllPalettes: () => Promise<Palette[] | null>;
 };
 
 export type PackingProviderProps = {

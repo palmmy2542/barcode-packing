@@ -1,26 +1,35 @@
 import { Box, Button, Chip, Typography } from "@mui/material";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { useMemo, useState } from "react";
+import { toast } from "react-toastify";
 import { usePacking } from "../../contexts/PackingProvider";
 import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
+import { addPalette } from "../../firebase";
 import { columns as packingCaseColumns } from "../PackingCases/utils";
 
 const Palettes = () => {
-  const { setPalettes, palettes, findPaletteById } = usePacking();
+  const { getAllPalettes, palettes, findPaletteById } = usePacking();
   const [selectedId, setSelectedId] = useState<string>("");
 
-  const handleAddPalette = () => {
-    setPalettes([
-      ...palettes,
-      {
-        id: `PL00${palettes.length + 1}`,
+  const handleAddPalette = async () => {
+    try {
+      const palette = await addPalette({
         ...{
           createdAt: new Date(),
           updatedAt: new Date(),
           status: PACKED_STATUS.PENDING,
         },
-      },
-    ]);
+      });
+      if (palette) {
+        await getAllPalettes();
+        toast.success("เพิ่มข้อมูลสำเร็จ");
+      } else {
+        throw new Error("ไม่สามารถเพิ่มข้อมูลได้");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("ไม่สามารถเพิ่มข้อมูลได้");
+    }
   };
 
   const packagingInPalette = useMemo(
@@ -29,7 +38,7 @@ const Palettes = () => {
   );
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 90 },
+    { field: "id", headerName: "ID", width: 200 },
     {
       field: "status",
       headerName: "สถานะ",
@@ -124,6 +133,9 @@ const Palettes = () => {
                 pageSize: 5,
               },
             },
+            sorting: {
+              sortModel: [{ field: "updatedAt", sort: "desc" }],
+            },
           }}
           pageSizeOptions={[5]}
           disableRowSelectionOnClick
@@ -143,6 +155,9 @@ const Palettes = () => {
                   paginationModel: {
                     pageSize: 5,
                   },
+                },
+                sorting: {
+                  sortModel: [{ field: "updatedAt", sort: "desc" }],
                 },
               }}
               pageSizeOptions={[5]}

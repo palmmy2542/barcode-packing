@@ -42,6 +42,7 @@ const Products = () => {
       toast.error("ไม่สามารถเพิ่มสินค้าได้");
     }
   };
+
   return (
     <>
       <Typography variant="h5" textAlign={"left"}>
@@ -78,6 +79,9 @@ const Products = () => {
               paginationModel: {
                 pageSize: 5,
               },
+            },
+            sorting: {
+              sortModel: [{ field: "updatedAt", sort: "desc" }],
             },
           }}
           pageSizeOptions={[5]}

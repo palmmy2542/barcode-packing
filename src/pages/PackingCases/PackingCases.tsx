@@ -5,23 +5,32 @@ import { usePacking } from "../../contexts/PackingProvider";
 import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
 import { columns as productColumns } from "../Products/utils";
 import { columns as packingCaseColumns } from "./utils";
+import { addPackaging } from "../../firebase";
+import { toast } from "react-toastify";
 
 const PackingCases = () => {
-  const { setPackagings, packagings, findPackagingById } = usePacking();
+  const { getAllPackagings, packagings, findPackagingById } = usePacking();
   const [selectedId, setSelectedId] = useState<string>("");
 
-  const handleAddPackaging = () => {
-    setPackagings([
-      ...packagings,
-      {
-        id: `B00${packagings.length + 1}`,
+  const handleAddPackaging = async () => {
+    try {
+      const packaging = await addPackaging({
         ...{
           createdAt: new Date(),
           updatedAt: new Date(),
           status: PACKED_STATUS.PENDING,
         },
-      },
-    ]);
+      });
+      if (packaging) {
+        await getAllPackagings();
+        toast.success("เพิ่มข้อมูลสำเร็จ");
+      } else {
+        throw new Error("ไม่สามารถเพิ่มข้อมูลได้");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("ไม่สามารถเพิ่มข้อมูลได้");
+    }
   };
 
   const productInPackaging = useMemo(
@@ -77,6 +86,9 @@ const PackingCases = () => {
                 pageSize: 5,
               },
             },
+            sorting: {
+              sortModel: [{ field: "updatedAt", sort: "desc" }],
+            },
           }}
           pageSizeOptions={[5]}
           disableRowSelectionOnClick
@@ -96,6 +108,9 @@ const PackingCases = () => {
                   paginationModel: {
                     pageSize: 5,
                   },
+                },
+                sorting: {
+                  sortModel: [{ field: "updatedAt", sort: "desc" }],
                 },
               }}
               pageSizeOptions={[5]}

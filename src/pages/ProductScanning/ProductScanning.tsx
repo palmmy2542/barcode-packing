@@ -61,7 +61,7 @@ const ProductScanning = () => {
 
   const columns: GridColDef[] = useMemo(
     () => [
-      { field: "id", headerName: "ID", width: 90 },
+      { field: "id", headerName: "ID", width: 200 },
       {
         field: "name",
         headerName: "บาร์โค๊ด",
@@ -193,6 +193,9 @@ const ProductScanning = () => {
                 paginationModel: {
                   pageSize: 5,
                 },
+              },
+              sorting: {
+                sortModel: [{ field: "updatedAt", sort: "desc" }],
               },
             }}
             pageSizeOptions={[5]}

@@ -3,7 +3,7 @@ import { GridColDef } from "@mui/x-data-grid";
 import { PACKED_STATUS } from "../../contexts/PackingProvider/types";
 
 export const columns: GridColDef[] = [
-  { field: "id", headerName: "ID", width: 90 },
+  { field: "id", headerName: "ID", width: 200 },
   {
     field: "status",
     headerName: "สถานะ",
