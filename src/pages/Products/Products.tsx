@@ -4,9 +4,11 @@ import { usePacking } from "../../contexts/PackingProvider";
 import { columns } from "./utils";
 import { useState } from "react";
 import { PACKED_STATUS, Product } from "../../contexts/PackingProvider/types";
+import { addProduct } from "../../firebase";
+import { toast } from "react-toastify";
 
 const Products = () => {
-  const { products, setProducts } = usePacking();
+  const { products, getAllProducts } = usePacking();
   const [newProduct, setNewProduct] = useState<Omit<Product, "id">>({
     name: "",
     amount: 0,
@@ -15,11 +17,30 @@ const Products = () => {
     status: PACKED_STATUS.READY,
   });
 
-  const handleAddProduct = () => {
-    setProducts([
-      ...products,
-      { id: `P00${products.length + 1}`, ...newProduct },
-    ]);
+  const handleAddProduct = async () => {
+    if (!newProduct.name || !newProduct.amount) {
+      toast.error("กรุณากรอกข้อมูลให้ครบ");
+      return;
+    }
+    try {
+      const product = await addProduct(newProduct);
+      if (product) {
+        await getAllProducts();
+        toast.success("เพิ่มสินค้าสำเร็จ");
+        setNewProduct({
+          name: "",
+          amount: 0,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          status: PACKED_STATUS.READY,
+        });
+      } else {
+        throw new Error("ไม่สามารถเพิ่มสินค้าได้");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error("ไม่สามารถเพิ่มสินค้าได้");
+    }
   };
   return (
     <>

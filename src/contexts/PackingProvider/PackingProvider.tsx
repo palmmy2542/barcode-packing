@@ -1,13 +1,14 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 
 import { Outlet } from "react-router-dom";
+import { getProducts } from "../../firebase";
 import {
   IPackingContext,
-  Product,
   PACKED_STATUS,
   Packaging,
   PackingProviderProps,
   Palette,
+  Product,
 } from "./types";
 
 const PackingContext = createContext<IPackingContext>({
@@ -27,42 +28,8 @@ const PackingContext = createContext<IPackingContext>({
   removeProductInPackagingByProductId: () => {},
   addPackagingInPalette: () => {},
   removePackagingInPaletteByPackagingId: () => {},
+  getAllProducts: async () => null,
 });
-
-const mockProducts: Product[] = [
-  {
-    id: "P001",
-    name: "13124133",
-    amount: 100,
-    status: PACKED_STATUS.READY,
-    createdAt: new Date("2024-01-01"),
-    updatedAt: new Date("2024-01-01"),
-  },
-  {
-    id: "P002",
-    name: "13124134",
-    amount: 100,
-    status: PACKED_STATUS.READY,
-    createdAt: new Date("2024-01-01"),
-    updatedAt: new Date("2024-01-01"),
-  },
-  {
-    id: "P003",
-    name: "13124135",
-    amount: 100,
-    status: PACKED_STATUS.READY,
-    createdAt: new Date("2024-01-01"),
-    updatedAt: new Date("2024-01-01"),
-  },
-  {
-    id: "P004",
-    name: "13124136",
-    amount: 100,
-    status: PACKED_STATUS.READY,
-    createdAt: new Date("2024-01-01"),
-    updatedAt: new Date("2024-01-01"),
-  },
-];
 
 const mockPackagings: Packaging[] = [
   {
@@ -103,7 +70,7 @@ const mockPalettes: Palette[] = [
 
 const PackingProvider = (props: PackingProviderProps) => {
   const { children } = props;
-  const [products, setProducts] = useState<Product[]>(mockProducts);
+  const [products, setProducts] = useState<Product[]>([]);
   const [packagings, setPackagings] = useState<Packaging[]>(mockPackagings);
   const [palettes, setPalettes] = useState<Palette[]>(mockPalettes);
 
@@ -276,6 +243,21 @@ const PackingProvider = (props: PackingProviderProps) => {
     return palettes.find((palette) => palette.id === paletteId) ?? null;
   };
 
+  const getAllProducts = async (): Promise<Product[] | null> => {
+    try {
+      const products = await getProducts();
+      setProducts(products);
+      return products;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    getAllProducts();
+  }, []);
+
   return (
     <PackingContext.Provider
       value={{
@@ -297,6 +279,7 @@ const PackingProvider = (props: PackingProviderProps) => {
         addPackagingInPalette: handleAddPackagingInPalette,
         removePackagingInPaletteByPackagingId:
           handleRemovePackagingInPaletteByPackagingId,
+        getAllProducts: getAllProducts,
       }}
     >
       {children ?? <Outlet />}

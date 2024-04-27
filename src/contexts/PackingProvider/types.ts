@@ -59,6 +59,7 @@ export type IPackingContext = {
     paletteId: string,
     packagingId: string
   ) => void;
+  getAllProducts: () => Promise<Product[] | null>;
 };
 
 export type PackingProviderProps = {
